@@ -469,9 +469,12 @@ class Zend_Session extends Zend_Session_Abstract
 
         // See http://www.php.net/manual/en/ref.session.php for explanation
         if (!self::$_unitTestEnabled && defined('SID')) {
-            /** @see Zend_Session_Exception */
-            require_once 'Zend/Session/Exception.php';
-            throw new Zend_Session_Exception('session has already been started by session.auto-start or session_start()');
+            // Session has already been started, so just mark our internal state accordingly
+            // instead of throwing an exception
+            parent::$_readable = true;
+            parent::$_writable = true;
+            self::$_sessionStarted = true;
+            return;
         }
 
         /**
